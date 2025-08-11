@@ -17,4 +17,4 @@ A simple and efficient file transfer application built with Python and Kivy. Thi
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/rae/your-repo-name.git
+   git clone https://github.com/rakibulislam6666/FTP-APK-KIVY.git
