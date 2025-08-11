@@ -116,8 +116,7 @@ class RAKIBULS_HPFTPApp(App):
             except FileNotFoundError:
                 files = []
             self.label.text = f"Hotspot IP: {ip}\nServer: http://{ip}:{PORT}\n\nPublic Files List:\n" + "\n".join(files) if files else f"Hotspot IP: {ip}\nServer: http://{ip}:{PORT}\n(No files)"
-            #ptint(f"Hotspot IP: {ip}\nServer: http://{ip}:{PORT}\nFiles:\n" + "\n".join(files) if files else f"Hotspot IP: {ip}\nServer: http://{ip}:{PORT}\n(No files)"
-            
+          
         else:
             self.label.text = "Please ON Hotspot!"
 
@@ -134,3 +133,4 @@ class RAKIBULS_HPFTPApp(App):
 
 if __name__ == '__main__':
     RAKIBULS_HPFTPApp().run()
+
