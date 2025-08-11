@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receive Files</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fbfd;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+     
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .file-item {
+      background: white;
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: 0.2s ease;
+    }
+
+    .file-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: scale(1.01);
+    }
+
+    .file-thumbnail, .file-video {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .file-video {
+      background: black;
+    }
+
+    .file-icon {
+      font-size: 30px;
+    }
+
+    .file-name {
+      font-weight: bold;
+      color: #333;
+      flex-grow: 1;
+    }
+
+    .download-link {
+      background-color: #007BFF;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .download-link:hover {
+      background-color: #0056b3;
+    }
+    .send-file{
+      background: white;
+      color: #007BFF;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+
+    }
+  </style>
+</head>
+<body>
+  <header><a href="/send_file" class="send-file">Send File</a></header>
+  <header>Available Files for Download</header>
+  <div class="container" id="file-list"></div>
+
+  <script>
+    function isImage(fileName) {
+      return /\.(jpg|jpeg|png|gif|webp)$/i.test(fileName);
+    }
+
+    function isVideo(fileName) {
+      return /\.(mp4|webm|ogg|mkv)$/i.test(fileName);
+    }
+
+    function getFileIcon(fileName) {
+      const ext = fileName.split('.').pop().toLowerCase();
+      if (["mp3", "wav", "aac"].includes(ext)) return "🎵";
+      if (["pdf"].includes(ext)) return "📕";
+      if (["zip", "rar", "7z"].includes(ext)) return "📦";
+      if (["doc", "docx"].includes(ext)) return "📄";
+      if (["txt", "csv", "log"].includes(ext)) return "📝";
+      return "📁";
+    }
+
+    fetch('/list')
+      .then(res => res.json())
+      .then(files => {
+        const container = document.getElementById("file-list");
+
+        if (files.length === 0) {
+          container.innerHTML = "<p>No files available.</p>";
+          return;
+        }
+
+        files.forEach(file => {
+          const item = document.createElement("div");
+          item.className = "file-item";
+
+          let preview;
+          if (isImage(file)) {
+            preview = document.createElement("img");
+            preview.src = "/files/" + encodeURIComponent(file);
+            preview.className = "file-thumbnail";
+          } else if (isVideo(file)) {
+            preview = document.createElement("video");
+            preview.src = "/files/" + encodeURIComponent(file);
+            preview.className = "file-video";
+            preview.muted = true;
+            preview.playsInline = true;
+            preview.controls = false;
+            preview.setAttribute("preload", "metadata");
+          } else {
+            preview = document.createElement("span");
+            preview.className = "file-icon";
+            preview.textContent = getFileIcon(file);
+          }
+
+          const name = document.createElement("span");
+          name.className = "file-name";
+          name.textContent = file;
+
+          const link = document.createElement("a");
+          link.className = "download-link";
+          link.href = "/files/" + encodeURIComponent(file);
+          link.download = file;
+          link.textContent = "Download";
+
+          item.appendChild(preview);
+          item.appendChild(name);
+          item.appendChild(link);
+
+          container.appendChild(item);
+        });
+      });
+  </script>
+</body>
+</html>
